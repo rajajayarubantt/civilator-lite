@@ -440,7 +440,7 @@ export const mockCustomerAppSettings = {
   visibleCompanyName: "Civilator Construction",
   subUrl: "civilator-construction",
   colorTheme: "#3b82f6",
-  portalUrl: "https://customer.civilator.in/civilator-construction",
+  portalUrl: "https://customer.civilator.aiseowrite.in/civilator-construction",
 };
 
 // Indian states for dropdown

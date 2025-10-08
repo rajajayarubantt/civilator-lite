@@ -198,7 +198,7 @@ export const Settings: React.FC = () => {
       ...customerSettings,
       visibleCompanyName: name,
       subUrl: subUrl,
-      portalUrl: `https://customer.civilator.in/${subUrl}`,
+      portalUrl: `https://customer.civilator.aiseowrite.in/${subUrl}`,
     });
   };
 
@@ -485,7 +485,7 @@ export const Settings: React.FC = () => {
                   setCustomerSettings({
                     ...customerSettings,
                     subUrl: value as string,
-                    portalUrl: `https://customer.civilator.in/${value}`,
+                    portalUrl: `https://customer.civilator.aiseowrite.in/${value}`,
                   })
                 }
                 placeholder="e.g., archo-builders"
