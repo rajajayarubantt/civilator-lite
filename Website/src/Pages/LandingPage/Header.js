@@ -127,7 +127,7 @@ const Header = () => {
     return (
         <div className="project-landing-header-main">
             <div className="header-content-main">
-                <Link to={'https://civilator.in/'} className="header-logo">
+                <Link to={'https://civilator.aiseowrite.in/'} className="header-logo">
                     <img src={Images.logo} />
                 </Link>
                 <div className={`header-right-section ${mobileMenuOpen ? 'header-right-section-active' : ''}`}>
