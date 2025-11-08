@@ -211,10 +211,18 @@ export const Expenses: React.FC = () => {
       console.error("Error loading vendors:", error);
     }
   };
+  const renderParamsAction = () => {
+    const params = new URLSearchParams(window.location.search);
+    let action = params.get("action");
 
+    if (action == "add") {
+      setIsModalOpen(true);
+    }
+  };
   useEffect(() => {
     loadVendors();
     loadExpenses();
+    renderParamsAction();
   }, []);
 
   const getPaymentTypeBadge = (type: string) => {

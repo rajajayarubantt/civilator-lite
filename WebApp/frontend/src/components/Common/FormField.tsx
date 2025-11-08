@@ -1,5 +1,15 @@
 import React from "react";
+import {
+  Input,
+  Select,
+  Upload,
+  InputNumber,
+  Radio,
+  Checkbox,
+  DatePicker,
+} from "antd";
 import { clsx } from "clsx";
+import dayjs from "dayjs";
 
 interface FormFieldProps {
   label?: string;
@@ -15,6 +25,7 @@ interface FormFieldProps {
     | "radio"
     | "checkbox"
     | "range"
+    | "daterange"
     | "file";
   value: string | number | any;
   name?: string;
@@ -32,6 +43,7 @@ interface FormFieldProps {
   multiple?: boolean;
   className?: string;
   inputClass?: string;
+  allowClear?: boolean;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -54,98 +66,124 @@ export const FormField: React.FC<FormFieldProps> = ({
   rows = 3,
   className,
   inputClass = "",
+  allowClear = true,
 }) => {
-  const baseInputClasses = `w-full min-h-[50px] px-2 py-3  text-sm border border-gray-200 rounded-md shadow-sm focus:outline-none ${
-    ["radio", "checkbox"].includes(type) ? "focus:ring-0" : "focus:ring-2"
-  }  focus:ring-blue-500 focus:border-blue-500`;
-
   const renderInput = () => {
+    const commonProps = {
+      placeholder,
+      disabled: readonly,
+      status: error ? ("error" as const) : undefined,
+      className: inputClass,
+    };
+
     switch (type) {
       case "textarea":
         return (
-          <textarea
+          <Input.TextArea
+            {...commonProps}
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder={placeholder}
-            required={required}
             rows={rows}
-            readOnly={readonly}
-            className={clsx(
-              baseInputClasses,
-              error && "border-red-500",
-              inputClass
-            )}
+            allowClear={allowClear}
           />
         );
 
       case "select":
         return (
-          <select
+          <Select
+            {...commonProps}
             value={value}
-            onChange={(e) => onChange(e.target.value)}
-            required={required}
-            disabled={readonly}
-            className={clsx(
-              inputClass,
-              baseInputClasses,
-              readonly && "bg-gray-100 cursor-not-allowed",
-              error && "border-red-500"
-            )}
-          >
-            <option value="">Select...</option>
-            {options?.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            onChange={onChange}
+            options={options}
+            placeholder="Select..."
+            style={{
+              width: "100%",
+              height: "42px",
+            }}
+            allowClear={allowClear}
+          />
         );
 
       case "file":
         return (
-          <input
-            type="file"
+          <Upload
             multiple={multiple}
-            readOnly={readonly}
-            name={name}
-            onChange={(e) => {
-              if (e.target.files) {
-                onChange(e.target.files);
-              }
-            }}
-            required={required}
-            className={clsx(
-              baseInputClasses,
-              readonly && "bg-gray-100 cursor-not-allowed",
-              error && "border-red-500",
-              inputClass
-            )}
+            disabled={readonly}
+            onChange={(info) => onChange(info.fileList)}
+            className={inputClass}
+          >
+            <Input {...commonProps} readOnly />
+          </Upload>
+        );
+
+      case "number":
+        return (
+          <InputNumber
+            {...commonProps}
+            value={value}
+            onChange={onChange}
+            min={min}
+            max={max !== Infinity ? max : undefined}
+            style={{ width: "100%", height: "42px" }}
+          />
+        );
+
+      case "radio":
+        return (
+          <Radio
+            checked={value}
+            onChange={(e) => onChange(e.target.checked)}
+            disabled={readonly}
+            className={inputClass}
+          >
+            {label}
+          </Radio>
+        );
+
+      case "checkbox":
+        return (
+          <Checkbox
+            checked={value}
+            onChange={(e) => onChange(e.target.checked)}
+            disabled={readonly}
+            className={inputClass}
+          >
+            {label}
+          </Checkbox>
+        );
+
+      case "date":
+        return (
+          <DatePicker
+            {...commonProps}
+            value={value ? dayjs(value) : undefined}
+            onChange={onChange}
+            style={{ width: "100%", height: "42px" }}
+            allowClear={allowClear}
+          />
+        );
+      case "daterange":
+        return (
+          <DatePicker.RangePicker
+            disabled={readonly}
+            status={error ? ("error" as const) : undefined}
+            className={inputClass}
+            value={value ? value.map((v: any) => dayjs(v)) : undefined}
+            onChange={onChange}
+            style={{ width: "100%", height: "42px" }}
+            allowClear={allowClear}
           />
         );
 
       default:
         return (
-          <input
-            id={label}
+          <Input
+            {...commonProps}
             type={type}
-            value={type === "number" ? (value ? Number(value) : "") : value}
-            min={min}
-            max={max}
-            readOnly={readonly}
-            onChange={(e) =>
-              onChange(
-                type === "number" ? Number(e.target.value) : e.target.value
-              )
-            }
-            checked={["radio", "checkbox"].includes(type) ? value : undefined}
-            placeholder={placeholder}
-            required={required}
-            className={clsx(
-              baseInputClasses,
-              readonly && "bg-gray-100 cursor-not-allowed",
-              error && "border-red-500",
-              inputClass
-            )}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            style={{ width: "100%", height: "42px" }}
+            allowClear={allowClear}
           />
         );
     }
@@ -154,7 +192,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   return (
     <div className={clsx("relative", className)}>
       {!label_right && label && (
-        <label className="absolute top-[-8px] left-3 bg-white px-2 block text-sm  text-gray-500 mb-1 whitespace-nowrap">
+        <label className="absolute top-[-8px] z-10 left-3 bg-white px-2 block text-sm  text-gray-500 mb-1 whitespace-nowrap">
           {label + (value_label ? ` (${value_label})` : "")}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>

@@ -168,8 +168,17 @@ export const TaskList: React.FC = () => {
     }
   };
 
+  const renderParamsAction = () => {
+    const params = new URLSearchParams(window.location.search);
+    let action = params.get("action");
+
+    if (action == "add") {
+      setIsModalOpen(true);
+    }
+  };
   useEffect(() => {
     loadTasks();
+    renderParamsAction();
   }, []);
 
   const getStatusBadge = (task: any) => {

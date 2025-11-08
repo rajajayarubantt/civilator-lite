@@ -4,6 +4,7 @@ import { SiteSidebar } from "./components/Layout/SiteSidebar";
 import { Header } from "./components/Layout/Header";
 
 import { SiteMoreMenus } from "./pages/site/SiteMoreMenus";
+import QuickMenu from "./pages/site/QuickMenu";
 import { Expenses } from "./pages/site/Expenses";
 import { Payments } from "./pages/site/Payments";
 import { Materials } from "./pages/site/Materials";
@@ -18,7 +19,8 @@ function SiteIndex() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header site={true} />
         <Routes>
-          <Route path="/*" element={<Dashboard />} />
+          <Route path="*" element={<QuickMenu />} />
+          <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/more/*" element={<SiteMoreMenus />} />
           <Route path="/expenses/*" element={<Expenses />} />
           <Route path="/payments/*" element={<Payments />} />

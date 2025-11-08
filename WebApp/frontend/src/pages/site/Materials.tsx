@@ -6,6 +6,7 @@ import { Modal } from "../../components/Common/Modal";
 import { FormField } from "../../components/Common/FormField";
 import FileUpload from "../../components/Common/UploadFiles";
 import { Table } from "../../components/Common/Table";
+
 import {
   Plus,
   Edit,
@@ -508,11 +509,24 @@ export const Materials: React.FC = () => {
     }
   };
 
+  const renderParamsAction = () => {
+    const params = new URLSearchParams(window.location.search);
+    let action = params.get("action");
+
+    if (action == "add_procurement") {
+      setIsProcurementModalOpen(true);
+    } else if (action == "add_inventory") {
+      setIsInventoryModalOpen(true);
+    }
+  };
+
   useEffect(() => {
     loadVendors();
     loadMaterials();
     loadInventory();
     loadMasterMaterials();
+
+    renderParamsAction();
   }, []);
 
   const getPaymentTypeBadge = (type: string) => {

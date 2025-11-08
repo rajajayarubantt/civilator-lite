@@ -23,15 +23,42 @@ import AttendancesHandler from "../../handler/attendances";
 import LaboursMasterHandler from "../../handler/master_labours";
 
 export const Attendances: React.FC = () => {
+  const [activeMainTab, setActiveMainTab] = useState<"attendance" | "payables">(
+    "attendance"
+  );
   const [activeAttendanceTab, setActiveAttendanceTab] = useState<
     "all" | "vendor_labour" | "my_labour"
   >("all");
+  const [activePayableTab, setActivePayableTab] = useState<
+    "my_labour" | "vendor_labour"
+  >("my_labour");
+
+  const mainTabs = [
+    {
+      id: "attendance",
+      label: "Attendance",
+    },
+    {
+      id: "payables",
+      label: "Payables",
+    },
+  ];
 
   const attendanceTabs = [
     {
       id: "all",
       label: "All",
     },
+    {
+      id: "vendor_labour",
+      label: "Vendor Labour",
+    },
+    {
+      id: "my_labour",
+      label: "My Labour",
+    },
+  ];
+  const payableTabs = [
     {
       id: "vendor_labour",
       label: "Vendor Labour",
@@ -158,6 +185,12 @@ export const Attendances: React.FC = () => {
   const handleAttendanceTabChange = (id: string) => {
     setActiveAttendanceTab(id as any);
     loadAttendances(id);
+  };
+  const handlePayableTabChange = (id: string) => {
+    setActivePayableTab(id as any);
+  };
+  const handleMainTabChange = (id: string) => {
+    setActiveMainTab(id as any);
   };
 
   const HandleAddVendorLabour = (e: any) => {
@@ -1179,9 +1212,125 @@ export const Attendances: React.FC = () => {
     );
   };
 
+  const renderPayables = () => {
+    return (
+      <>
+        <div className="flex flex-col gap-4">
+          <div className="flex pb-4 border-b border-gray-200 gap-4 flex-col md:flex-row md:pb-0 md:items-center md:justify-between">
+            <nav className="-mb-px flex space-x-8 overflow-x-auto">
+              {payableTabs.map((tab) => {
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => handlePayableTabChange(tab.id)}
+                    className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                      activePayableTab === tab.id
+                        ? "border-blue-500 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-4 w-full md:w-max">
+              <div className="mobile-view-disable flex items-center gap-2 border border-gray-300 rounded-lg p-1 min-w-[200px]">
+                <SearchIcon className="w-4 h-4 text-gray-900 cursor-pointer ml-2" />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="h-[28px] text-sm border-none outline-none"
+                  value={searchQuery}
+                />
+              </div>
+              <div className="flex items-center gap-2 relative w-full">
+                <FormField
+                  label="Between"
+                  type="daterange"
+                  value={[CurrentDate, CurrentDate]}
+                  onChange={(value) => {}}
+                  allowClear={false}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-max">
+              <span className="text-md font-semibold text-gray-900">
+                To pay: ₹{" "}
+                {parseFloat(AttendanceSummary.total_payable).toFixed(2)}
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 flex items-center gap-1 before:content-[''] before:block before:w-[10px] before:h-[10px] before:bg-blue-200">
+                  {AttendanceSummary.present} Pre
+                </span>
+                <span className="text-xs text-gray-500 flex items-center gap-1 before:content-[''] before:block before:w-[10px] before:h-[10px] before:bg-yellow-200">
+                  {AttendanceSummary.halfday} Hal
+                </span>
+                <span className="text-xs text-gray-500 flex items-center gap-1 before:content-[''] before:block before:w-[10px] before:h-[10px] before:bg-red-200">
+                  {AttendanceSummary.absent} Abs
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full mt-4">
+            <Table
+              columns={payableColumns}
+              data={AttendancesList}
+              mobileCardTitle={(row: any) =>
+                row.type == "vendor_labour" ? row.vendor_name : row.name
+              }
+              mobileCardSubtitle={(row: any) =>
+                row.type == "vendor_labour"
+                  ? row.labours?.map((l: any) => l.labour_name).join(" | ")
+                  : row.type_name
+              }
+              actions={() => (
+                <>
+                  <Button
+                    size="sm"
+                    variant="primary_light"
+                    onClick={() => {}}
+                    icon={PlusCircle}
+                  >
+                    Update Payments
+                  </Button>
+                </>
+              )}
+            />
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <Layout title="Attendances">
-      <div className="flex flex-col gap-4">{renderAttendance()}</div>
+      <div className="flex flex-col gap-4">
+        <div className="w-full flex justify-center">
+          <nav className="w-full md:w-max flex rounded-md bg-gray-100 border border-gray-200 overflow-x-auto">
+            {mainTabs.map((tab) => {
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleMainTabChange(tab.id)}
+                  className={`w-full justify-center flex items-center px-3 py-2 font-medium text-sm whitespace-nowrap ${
+                    activeMainTab === tab.id
+                      ? "bg-blue-500 text-white"
+                      : "bg-transparent text-gray-500 hover:text-gray-700 hover:text-blue-500"
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+        {activeMainTab == "attendance" && renderAttendance()}
+        {activeMainTab == "payables" && renderPayables()}
+      </div>
     </Layout>
   );
 };

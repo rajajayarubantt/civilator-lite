@@ -14,7 +14,7 @@ class AWSS3Uploader {
         this.config = config.get("aws");
 
         this.region = this.config.region || 'ap-south-1'
-        this.bucket = this.config.bucket || "civilator";
+        this.bucket = this.config.bucket || "civilatorbucket";
 
         this.aws_s3 = new S3Client({
             credentials: {

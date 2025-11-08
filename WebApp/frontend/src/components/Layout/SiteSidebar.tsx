@@ -5,7 +5,7 @@ import Images from "../../assets/Images";
 
 import {
   LayoutDashboard,
-  Building2,
+  Blocks,
   Contact2Icon,
   ReceiptText,
   ClipboardCheck,
@@ -19,7 +19,8 @@ import {
 interface SidebarProps {}
 
 const navigation = [
-  { name: "Site overview", href: "", icon: LayoutDashboard },
+  { name: "Quick Menu", href: "", icon: Blocks },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Tasks", href: "/tasks", icon: ClipboardCheck },
   { name: "Attendance", href: "/attendances", icon: Contact2Icon },
   { name: "Expenses", href: "/expenses", icon: ReceiptText },
@@ -27,7 +28,8 @@ const navigation = [
   { name: "Materials", href: "/materials", icon: Package2 },
 ];
 const mobile_navigation = [
-  { name: "Site overview", href: "", icon: LayoutDashboard },
+  { name: "Menus", href: "", icon: Blocks },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Tasks", href: "/tasks", icon: ClipboardCheck },
   { name: "Materials", href: "/materials", icon: Package2 },
   { name: "Attendance", href: "/attendances", icon: Contact2Icon },
